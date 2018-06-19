@@ -13,7 +13,7 @@ public class Window extends JPanel implements Runnable{
     public static int height = 495;
     public int speed = 1000000;
 
-    private boolean isRunning = false;
+    private boolean isRunning = false, isPause = false, isGameOver = false;
     private Thread thread;
 
     private Random r;
@@ -23,6 +23,8 @@ public class Window extends JPanel implements Runnable{
 
     private Food f;
     private ArrayList<Food> food;
+
+    private Font pauseFont;
 
     private int x = 15;
     private int y = 15;
@@ -63,6 +65,7 @@ public class Window extends JPanel implements Runnable{
 
         for (int i = 0; i < food.size(); i++){
             if(x == food.get(i).getX() && y == food.get(i).getY()){
+                java.awt.Toolkit.getDefaultToolkit().beep();
                 snakeLong++;
                 food.remove(i);
                 i--;
@@ -72,6 +75,7 @@ public class Window extends JPanel implements Runnable{
         for(int i = 0; i < snake.size(); i++){
             if(x == snake.get(i).getX() && y == snake.get(i).getY()){
                 if(i != snake.size() - 1){
+                    isGameOver = true;
                     stop();
                 }
             }
@@ -129,6 +133,14 @@ public class Window extends JPanel implements Runnable{
         for (int i = 0; i < food.size(); i++){
             food.get(i).draw(g);
         }
+
+        if(isPause){
+            pause(g);
+        }
+
+        if(isGameOver){
+            gameOver(g);
+        }
     }
 
     public void start(){
@@ -153,6 +165,24 @@ public class Window extends JPanel implements Runnable{
         }
     }
 
+    public void pause(Graphics g){
+        pauseFont = new Font("Arial", Font.BOLD, 50);
+        g.setFont(pauseFont);
+        g.setColor(Color.RED);
+        g.drawString("Pause", (width/2) - 65, (height/2) - 50);
+        pauseFont = new Font("Arial", Font.BOLD, 30);
+        g.setFont(pauseFont);
+        g.drawString("Space - Resume", (width/2) - 110, (height/2) - 15);
+        g.drawString("ESC - Game Over", (width/2) - 117, (height/2) + 20);
+    }
+
+    public void gameOver(Graphics g){
+        pauseFont = new Font("Arial", Font.BOLD, 50);
+        g.setFont(pauseFont);
+        g.setColor(Color.RED);
+        g.drawString("Game Over", (width/2) - 135, height/2);
+    }
+
     private class Key implements KeyListener {
 
         @Override
@@ -164,22 +194,22 @@ public class Window extends JPanel implements Runnable{
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
 
-            if(key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D && !left){
+            if((key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) && !left){
                 up = false;
                 down = false;
                 right = true;
             }
-            if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A && !right){
+            if((key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) && !right){
                 up = false;
                 down = false;
                 left = true;
             }
-            if(key == KeyEvent.VK_UP || key == KeyEvent.VK_W && !down){
+            if((key == KeyEvent.VK_UP || key == KeyEvent.VK_W) && !down){
                 right = false;
                 left = false;
                 up = true;
             }
-            if(key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S && !up){
+            if((key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) && !up){
                 right = false;
                 left = false;
                 down = true;
@@ -187,10 +217,18 @@ public class Window extends JPanel implements Runnable{
 
             if(key == KeyEvent.VK_ESCAPE){
                 if(isRunning){
+                    isPause = true;
                     stop();
                 }
                 else{
                     System.exit(0);
+                }
+            }
+
+            if( key == KeyEvent.VK_SPACE){
+                if(!isRunning){
+                    isPause = false;
+                    start();
                 }
             }
         }

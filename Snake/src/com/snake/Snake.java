@@ -3,6 +3,7 @@ package com.snake;
 import java.awt.*;
 
 public class Snake {
+    Color snakeColor;
     private int x, y, width, height;
 
     public Snake(int x, int y, int tailThick){
@@ -12,12 +13,9 @@ public class Snake {
         height = tailThick;
     }
 
-    public void refresh(){
-
-    }
-
     public void draw(Graphics g){
-        g.setColor(Color.BLACK);
+        snakeColor = new Color(0, 100, 0);
+        g.setColor(snakeColor);
         g.fillRect(x * width, y * height, width, height);
         g.fillRect(x * width + 2, y * height + 2, width - 4, height - 4);
     }
