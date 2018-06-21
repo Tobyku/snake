@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class Game extends JFrame {
 
+
     public Game(){
         setTitle("Snake");
         setResizable(false);
@@ -30,3 +31,4 @@ public class Game extends JFrame {
         new Game();
     }
 }
+

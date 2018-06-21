@@ -11,7 +11,7 @@ public class Window extends JPanel implements Runnable{
 
     public static int width = 495;
     public static int height = 495;
-    public int speed = 1000000;
+    public int speed = 700000;
 
     private boolean isRunning = false, isPause = false, isGameOver = false;
     private Thread thread;
@@ -41,8 +41,6 @@ public class Window extends JPanel implements Runnable{
         addKeyListener(key);
         setPreferredSize(new Dimension(width, height));
 
-        r = new Random();
-
         snake = new ArrayList<>();
         food = new ArrayList<>();
 
@@ -50,6 +48,8 @@ public class Window extends JPanel implements Runnable{
     }
 
     public void refresh(){
+        r = new Random();
+
         if(snake.size() == 0){
             s = new Snake(x, y, 15);
             snake.add(s);
@@ -62,6 +62,11 @@ public class Window extends JPanel implements Runnable{
             f = new Food(x, y, 15);
             food.add(f);
         }
+
+        if(s.getX() < 0){ x = 32; }
+        if(s.getX() > 32){ x = 0; }
+        if(s.getY() < 0){ y = 32; }
+        if(s.getY() > 32){ y = 0; }
 
         for (int i = 0; i < food.size(); i++){
             if(x == food.get(i).getX() && y == food.get(i).getY()){
@@ -81,22 +86,27 @@ public class Window extends JPanel implements Runnable{
             }
         }
 
-        if(x < 0){ x = 32; }
-        if(x > 32){ x = 0; }
-        if(y < 0){ y = 32; }
-        if(y > 32){ y = 0; }
-
         ref++;
 
-        switch (snake.size()) {
+        switch (snakeLong) {
             case 10:
-                speed = 900000;
-            case 20:
-                speed = 800000;
-            case 25:
-                speed = 700000;
-            case 30:
                 speed = 600000;
+                break;
+            case 20:
+                speed = 500000;
+                break;
+            case 25:
+                speed = 400000;
+                break;
+            case 30:
+                speed = 300000;
+                break;
+            case 35:
+                speed = 200000;
+                break;
+            case 40:
+                speed = 100000;
+                break;
         }
 
         if(ref > speed){
@@ -229,6 +239,12 @@ public class Window extends JPanel implements Runnable{
                 if(!isRunning){
                     isPause = false;
                     start();
+                }
+            }
+
+            if( key == KeyEvent.VK_SPACE){
+                if(!isRunning){
+                    new Game();
                 }
             }
         }
